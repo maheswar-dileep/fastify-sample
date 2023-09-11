@@ -1,25 +1,39 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteProducts = exports.editProducts = exports.getProductbyId = exports.getProducts = exports.addProducts = void 0;
-const product_model_js_1 = __importDefault(require("../model/product.model.js"));
+const services = __importStar(require("../services/services.js"));
 //*--- add-products---*//
 const addProducts = async (req, reply) => {
     try {
         const { name, price, stock, description } = req.body;
-        const newProducts = new product_model_js_1.default({
-            name,
-            price,
-            stock,
-            description,
-        });
-        const product = await newProducts.save();
+        const data = await services.addProducts({ name, price, stock, description });
         reply.code(200).send({
             statusCode: 200,
             msg: 'Get Products',
-            product,
+            data,
         });
     }
     catch (error) {
@@ -35,11 +49,11 @@ exports.addProducts = addProducts;
 //*--- Get-Products---*//
 const getProducts = async (req, reply) => {
     try {
-        const products = await product_model_js_1.default.find();
+        const data = await services.findAllProducts();
         reply.code(200).send({
             statusCode: 200,
             msg: 'Get Products',
-            products,
+            data,
         });
     }
     catch (error) {
@@ -51,11 +65,11 @@ exports.getProducts = getProducts;
 const getProductbyId = async (req, reply) => {
     try {
         const id = req.params?.id;
-        const products = await product_model_js_1.default.find({ _id: id });
+        const data = await services.findProductById(id);
         reply.code(200).send({
             statusCode: 200,
             msg: 'Get Products',
-            products,
+            data,
         });
     }
     catch (error) {
@@ -68,16 +82,11 @@ const editProducts = async (req, reply) => {
     try {
         const id = req.params?.id;
         const { name, price, stock, description } = req.body;
-        const product = await product_model_js_1.default.updateOne({ _id: id }, {
-            name,
-            price,
-            stock,
-            description,
-        });
+        const data = await services.editProducts(id, { name, price, stock, description });
         reply.code(200).send({
             statusCode: 200,
-            msg: 'Get Products',
-            product,
+            msg: 'Product edited',
+            data,
         });
     }
     catch (error) {
@@ -89,11 +98,11 @@ exports.editProducts = editProducts;
 const deleteProducts = async (req, reply) => {
     try {
         const id = req.params?.id;
-        const product = await product_model_js_1.default.deleteOne({ _id: id });
+        const data = services.deleteProduct(id);
         reply.code(200).send({
             statusCode: 200,
-            msg: 'Get Products',
-            product,
+            msg: 'Product deleted',
+            data,
         });
     }
     catch (error) {

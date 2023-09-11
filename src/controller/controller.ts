@@ -1,5 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import Products from '../model/product.model.js';
+import * as services from '../services/services.js';
 
 interface IProducts {
   name: string;
@@ -13,18 +14,12 @@ export const addProducts = async (req: FastifyRequest, reply: FastifyReply) => {
   try {
     const { name, price, stock, description }: IProducts = req.body as IProducts;
 
-    const newProducts = new Products({
-      name,
-      price,
-      stock,
-      description,
-    });
+    const data = await services.addProducts({ name, price, stock, description });
 
-    const product = await newProducts.save();
     reply.code(200).send({
       statusCode: 200,
       msg: 'Get Products',
-      product,
+      data,
     });
   } catch (error) {
     console.error(error);
@@ -40,12 +35,12 @@ export const addProducts = async (req: FastifyRequest, reply: FastifyReply) => {
 
 export const getProducts = async (req: FastifyRequest, reply: FastifyReply) => {
   try {
-    const products = await Products.find();
+    const data = await services.findAllProducts();
 
     reply.code(200).send({
       statusCode: 200,
       msg: 'Get Products',
-      products,
+      data,
     });
   } catch (error) {
     console.log(error);
@@ -56,14 +51,14 @@ export const getProducts = async (req: FastifyRequest, reply: FastifyReply) => {
 
 export const getProductbyId = async (req: FastifyRequest, reply: FastifyReply) => {
   try {
-    const id: string = req.params?.id as string;
+    const id: string = req.params?.id as any ;
 
-    const products = await Products.find({ _id: id });
+    const data = await services.findProductById(id);
 
     reply.code(200).send({
       statusCode: 200,
       msg: 'Get Products',
-      products,
+      data,
     });
   } catch (error) {
     console.log(error);
@@ -77,20 +72,12 @@ export const editProducts = async (req: FastifyRequest, reply: FastifyReply) => 
     const id: string = req.params?.id as string;
     const { name, price, stock, description }: IProducts = req.body as IProducts;
 
-    const product = await Products.updateOne(
-      { _id: id },
-      {
-        name,
-        price,
-        stock,
-        description,
-      }
-    );
+    const data = await services.editProducts(id, { name, price, stock, description });
 
     reply.code(200).send({
       statusCode: 200,
-      msg: 'Get Products',
-      product,
+      msg: 'Product edited',
+      data,
     });
   } catch (error) {
     console.log(error);
@@ -103,12 +90,11 @@ export const deleteProducts = async (req: FastifyRequest, reply: FastifyReply) =
   try {
     const id: string = req.params?.id as string;
 
-    const product = await Products.deleteOne({ _id: id });
-
+    const data = services.deleteProduct(id);
     reply.code(200).send({
       statusCode: 200,
-      msg: 'Get Products',
-      product,
+      msg: 'Product deleted',
+      data,
     });
   } catch (error) {
     console.log(error);

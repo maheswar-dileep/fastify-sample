@@ -4,24 +4,25 @@ const fastify = Fastify({
   logger: true,
 });
 
+import fastifySwagger from '@fastify/swagger';
+import fastifySwaggerUi from '@fastify/swagger-ui';
 import productRoutes from './routes/routes.js';
 import connection from './config/db.config.js';
+import * as swagger from './config/swagger.js';
 
-/**
- * * Routes
- */
+//*--- swagger-documentation ---*/
+
+fastify.register(fastifySwagger, swagger.swaggerOptions);
+fastify.register(fastifySwaggerUi, swagger.swaggerUiOptions);
+//*--- Routes ---*/
 
 fastify.register(productRoutes, { prefix: '/api/v1/products' });
 
-/**
- * * DB Connection
- */
+//*--- DB Conneciton ---*/
 
 connection();
 
-/**
- * * Server Connection
- */
+//*--- Server Conneciton ---*/
 
 const start = async () => {
   try {
