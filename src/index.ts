@@ -5,10 +5,23 @@ const fastify = Fastify({
 });
 
 import productRoutes from './routes/routes.js';
+import connection from './config/db.config.js';
 
+/**
+ * * Routes
+ */
 
 fastify.register(productRoutes, { prefix: '/api/v1/products' });
 
+/**
+ * * DB Connection
+ */
+
+connection();
+
+/**
+ * * Server Connection
+ */
 
 const start = async () => {
   try {

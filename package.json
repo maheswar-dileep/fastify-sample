@@ -10,7 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fastify": "^4.22.2"
+    "@types/mongoose": "^5.11.97",
+    "fastify": "^4.22.2",
+    "mongoose": "^7.5.0"
   },
   "devDependencies": {
     "@types/node": "^20.6.0",

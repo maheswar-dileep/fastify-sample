@@ -8,7 +8,18 @@ const fastify = (0, fastify_1.default)({
     logger: true,
 });
 const routes_js_1 = __importDefault(require("./routes/routes.js"));
+const db_config_js_1 = __importDefault(require("./config/db.config.js"));
+/**
+ * * Routes
+ */
 fastify.register(routes_js_1.default, { prefix: '/api/v1/products' });
+/**
+ * * DB Connection
+ */
+(0, db_config_js_1.default)();
+/**
+ * * Server Connection
+ */
 const start = async () => {
     try {
         fastify.listen({ port: 8801 }, () => {

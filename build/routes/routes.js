@@ -23,9 +23,23 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const bodySchema = __importStar(require("../helpers/addProducts.js"));
 const controller = __importStar(require("../controller/controller.js"));
 const productRoutes = (fastify, options, done) => {
+    //*--- product-Routes ---*//;
     fastify.get('/', controller.getProducts);
+    fastify.get('/:id', controller.getProductbyId);
+    fastify.delete('/:id', controller.editProducts);
+    fastify.post('/', {
+        schema: {
+            body: bodySchema.productsValidation,
+        },
+    }, controller.addProducts);
+    fastify.put('/:id', {
+        schema: {
+            body: bodySchema.productsValidation,
+        },
+    }, controller.editProducts);
     done();
 };
 exports.default = productRoutes;
